@@ -176,13 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             //some recorre todos los objetos, valida si ya existe o no el producto con true o false
             const existe = allProducts.some(product => product.title === infoProducts.title);
-
-    
            //console.log(existe);
             if(existe) {
                 //
-                const products = allProducts.map(product => {
-                    if(product.title == infoProducts.title ){
+                const productss = allProducts.map(product => {
+                    if(product.title === infoProducts.title ){
                         product.quantity++;
                         return product;
                     }
@@ -190,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         return product;
                     }
                 });
-                allProducts = [...products];
+                allProducts = [...productss];
             } else {
             // console.log(infoProducts) //validar que nos de la informacion
             allProducts = [...allProducts, infoProducts];
@@ -200,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //console.log(allProducts) 
 
      });
-    
+    const cartTotal = document.querySelector('.cart-total');
 
      document.addEventListener("DOMContentLoaded", function () {
         const item = document.querySelector("#item__Cart"); // Ajusta el selector según tu estructura
@@ -227,55 +225,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
      //fincion mostrar html 
     
-     const showHTML = () => {
+   const showHTML = () => {
+    // Si no hay productos
+   	if (!allProducts.length) {
+		cartEmpty.classList.remove('hidden');
+		rowProduct.classList.add('hidden');
+		cartTotal.classList.add('hidden');
+	} else {
+		cartEmpty.classList.add('hidden');
+		rowProduct.classList.remove('hidden');
+		cartTotal.classList.remove('hidden');
+	}
+// Limpiar HTML
+	rowProduct.innerHTML = '';
 
-        if(!allProducts.length){
-            containerCartProducts.innerHTML= `
-            <p class="cart-empty"> El carrito esta vacio </p>
-            `
-        }
+    // Si hay productos, limpia mensaje vacío
+    const emptyMessage = containerCartProducts.querySelector('.cart-empty');
+    if (emptyMessage) emptyMessage.remove();
 
-            //limpiar html
-            rowProduct.innerHTML='';
+    let total = 0;
+    let totalOfProducts = 0;
 
-            let total = 0;
-            let totalOfProducts = 0;
-
-        allProducts.forEach(product => {
-            const containerProduct = document.createElement('div')
-            containerProduct.classList.add('cart-product')
-            containerProduct.innerHTML =  `
-            
-            <div  class="info-cart-product"> 
+    allProducts.forEach(product => {
+        const containerProduct = document.createElement('div');
+        containerProduct.classList.add('cart-product');
+        containerProduct.innerHTML = `
+            <div class="info-cart-product"> 
                 <span class="cantidadProductoCarrito">${product.quantity}</span>            
-                <img class="cart__img" src= "${product.img}" alt="">
+                <img class="cart__img" src="${product.img}" alt="">
                 <p class="cart__tituloarticulo">${product.title}</p>
                 <p class="cart__precio">${product.price}</p>
             </div>
-                     <svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="icon-close"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
-            
-            `;
-            
-            rowProduct.append(containerProduct);
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="icon-close">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        `;
+        rowProduct.append(containerProduct);
 
-            total =
-			total + parseInt(product.quantity * product.price.replace(/,/g, "").slice(1));
-		totalOfProducts = totalOfProducts + product.quantity;
-	});
+        total += parseInt(product.quantity * product.price.replace(/,/g, "").slice(1));
+        totalOfProducts += product.quantity;
+    });
 
-	valorTotal.innerText = `$${total}`;
-	countProducts.innerText = totalOfProducts;
+    valorTotal.innerText = `$${total}`;
+    countProducts.innerText = totalOfProducts;
 };
